@@ -1,13 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import { OrgEffects } from './reducers/org.effect';
-// import { SvcEffects } from './reducers/svc.effect';
+import { SvcEffects } from './reducers/svc.effect';
 import {reducers, metaReducers } from './reducers';
 
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatButtonModule, MatGridListModule,
   MatMenuModule, MatToolbarModule, MatFormFieldModule, MatSelectModule, MatListModule,
   MatIconModule, MatCardModule, MatTabsModule, MatChipsModule, MatInputModule} from '@angular/material';
@@ -20,6 +20,12 @@ import { OrganizationsComponent } from './organizations/organizations.component'
 import { OrganizationComponent } from './organization/organization.component';
 import { ServiceComponent } from './service/service.component';
 import { ProfileComponent } from './profile/profile.component';
+
+import {SnetService} from './snet.service';
+
+export function init_snet(snetService: SnetService) {
+  return () => snetService.init();
+}
 
 @NgModule({
   declarations: [
@@ -37,9 +43,12 @@ import { ProfileComponent } from './profile/profile.component';
     AppRoutingModule,
     BrowserAnimationsModule,
     StoreModule.forRoot(reducers, { metaReducers }),
-    EffectsModule.forRoot([OrgEffects])
+    EffectsModule.forRoot([SvcEffects, OrgEffects])
   ],
-  providers: [],
+  providers: [
+    SnetService,
+    { provide: APP_INITIALIZER, useFactory: init_snet, deps: [SnetService], multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

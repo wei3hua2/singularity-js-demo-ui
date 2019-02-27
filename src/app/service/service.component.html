@@ -1,3 +1,25 @@
 <p>
-  service works!
+  ID : {{ (svc$ | async).serviceId }}
 </p>
+<p>
+  Tags : {{ (svc$ | async).tags }}
+</p>
+
+<h3>{{ (svc$ | async)?.info?.name }}</h3>
+
+
+<div *ngFor="let method of (svc$ | async)?.info?.methods | keyvalue">
+  <h4>{{ method.key }}</h4>
+  <div>
+    <h5>{{method.value.request.name}}</h5>
+    <p *ngFor="let field of method.value.request.fields | keyvalue">
+      {{field.key}} : {{field.value.type}} - {{field.value.required}} - {{field.value.optional}}
+    </p>
+    <h5>{{method.value.response.name}}</h5>
+    <p *ngFor="let field of method.value.response.fields | keyvalue">
+      {{field.key}} : {{field.value.type}} - {{field.value.required}} - {{field.value.optional}}
+    </p>
+  </div>
+  <!-- <p>{{ method.value.request | json}}</p>
+  <p>{{ method.value.response | json}}</p> -->
+</div>

@@ -6,6 +6,9 @@ import * as fromRoot from '../reducers';
 
 import {LoadOrgs} from '../reducers/org.actions';
 
+import {Snet} from 'singnet-js/dist/snet.js';
+import {Organization} from 'singnet-js/dist/models';
+
 @Component({
   selector: 'app-organizations',
   templateUrl: './organizations.component.html',
@@ -13,7 +16,7 @@ import {LoadOrgs} from '../reducers/org.actions';
 })
 export class OrganizationsComponent implements OnInit {
 
-  orgs: Observable<any[]>;
+  orgs: Observable<{[id: string]: Organization}>;
 
   constructor(
     private rtr: Router,
@@ -22,14 +25,11 @@ export class OrganizationsComponent implements OnInit {
   ngOnInit() {
     this.store.dispatch(new LoadOrgs);
 
-    this.orgs = this.store.select<any[]>(state => state.organization.orgs);
-
-    this.orgs.subscribe(console.log);
+    this.orgs = this.store.select<{[id: string]: Organization}>(state => state.organization.orgs);
   }
 
-  goToOrg(evt) {
-    console.log(evt);
-    this.rtr.navigate(['/organization', 'orgId1']);
+  goToOrg(org) {
+    this.rtr.navigate(['/organization', org.id]);
   }
 
 }

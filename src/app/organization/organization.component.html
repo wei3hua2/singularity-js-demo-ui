@@ -1,11 +1,15 @@
 <p>
-  orgId : {{orgId}}
+  ID : {{ (org$ | async).id }}
 </p>
-
-<p (click)="goToService($event)">
-  service 1
-</p>
-
 <p>
-  service 2
+  Name : {{ (org$ | async).name }}
+</p>
+<p>
+  Owner : {{ (org$ | async).owner }}
+</p>
+
+<br/><br/>
+
+<p *ngFor="let svc of orgSvcs$ | async | keyvalue" (click)="goToService(svc.value)">
+  {{svc.key}}
 </p>
