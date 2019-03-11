@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
+import * as fromRoot from '../reducers';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Observable, of, from } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
@@ -12,6 +13,7 @@ import _ from 'lodash';
 export class OrgEffects {
 
   constructor(
+    private store: Store<fromRoot.State>,
     private snetSvc: SnetService,
     private actions$: Actions) {}
 
@@ -33,9 +35,15 @@ export class OrgEffects {
         const payload: any = action['payload'];
 
         return this.snetSvc.initOrganization(payload).pipe(  
-          map((oR) => new org.InitOrgSuccess(oR)),
+          map((oR) => {
+            const act = new org.InitOrgSuccess(oR);
+            this.store.dispatch(act);
+            return act;
+          }),
           switchMap((orgSuccessAction) => {
-            return from(payload.getServices()).pipe(
+            const o = orgSuccessAction['payload'];
+
+            return from(o.getServices()).pipe(
               map((svcs: any[]) => new svc.LoadOrgSvcsSuccess(svcs))
             );
           })

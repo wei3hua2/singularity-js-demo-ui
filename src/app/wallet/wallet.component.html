@@ -1,0 +1,38 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Profile</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+      <mat-list>
+        <h3 mat-subheader>Information</h3>
+        <mat-list-item>
+          <mat-icon mat-list-icon>directions</mat-icon>
+          <h4 mat-line>Address</h4>
+          <p mat-line> {{(profile$ | async).address}}</p>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon mat-list-icon>account_balance_wallet</mat-icon>
+          <h4 mat-line>AGI</h4>
+          <p mat-line> {{(profile$ | async).agiInCogs | agi}} ( {{(profile$ | async).agiInCogs}} cogs )</p>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon mat-list-icon>account_balance</mat-icon>
+          <h4 mat-line>Escrow Amount</h4>
+          <p mat-line> {{(profile$ | async).agiEscrowInCogs | agi}} ( {{(profile$ | async).agiEscrowInCogs}} cogs )</p>
+        </mat-list-item>
+
+        <mat-divider></mat-divider>
+        <h3 mat-subheader>Channels</h3>
+        <mat-list-item *ngFor="let c of channels$ | async">
+          <mat-icon mat-list-icon>label</mat-icon>
+          <h4 mat-line>id {{c.channelId}} : {{c.amount}} cogs</h4>
+          <p mat-line>expiration : {{c.expiration}}, nonce : {{c.nonce}}</p>
+          <!-- <p mat-line>recipient : {{c.recipient}}</p> -->
+          <p mat-line>sender : {{c.sender}}</p>
+          <!-- <p mat-line>signer : {{c.signer}}</p> -->
+          <p mat-line>groupId : {{c.groupId}}</p>
+        </mat-list-item>
+
+      </mat-list>
+  </mat-card-content>
+</mat-card>

@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {Organization, Service} from 'singnet-js/dist/models';
 import {Observable} from 'rxjs';
-import { Store } from '@ngrx/store';
+import { Store, createSelector, select } from '@ngrx/store';
 import * as fromRoot from '../reducers';
 import {InitOrg} from '../reducers/org.actions';
-import {first} from 'rxjs/operators';
+import {InitSvc} from '../reducers/svc.actions';
+import _ from 'lodash';
 
 @Component({
   selector: 'app-organization',
@@ -24,18 +25,31 @@ export class OrganizationComponent implements OnInit {
     }
 
   ngOnInit() {
-    this.org$ = this.store.select<Organization>(state => state.organization.orgs[this.orgId]);
-    this.orgSvcs$ = this.store.select<Service>(state => state.service.svcOrg[this.orgId]);
+    const getOrgs = (state) => _.map(state.organizations, 'org');
+    const orgById = createSelector(getOrgs, (orgs, props) => _.find(orgs, ['id', this.orgId]));
 
-    this.org$.pipe(first())
-      .subscribe((org) => { this.store.dispatch(new InitOrg(org)); });
-    
-    this.org$.subscribe(console.log);
-    this.orgSvcs$.subscribe(console.log);
+    const getServices = (state) => _.map(state.services, 'svc');
+    const svcsByOrgId = createSelector(getServices, (svcs, props) => _.filter(svcs, ['organizationId', props.orgId]));
+
+    this.org$ = this.store.pipe(select(orgById, {id: this.orgId}));
+    this.orgSvcs$ = this.store.pipe(select(svcsByOrgId, {orgId: this.orgId}));
+
+    this.store.dispatch(new InitOrg(this.orgId));
+
+
+    const subscription = this.orgSvcs$.subscribe((svcs) => {
+      _.forEach(svcs, (svc) => {
+        if (!svc.isInit) this.store.dispatch(new InitSvc(svc));
+      });
+
+      if (svcs.length > 0 && subscription) subscription.unsubscribe();
+    });
   }
 
-  goToService(svc) {
-    console.log(svc);
-    this.rtr.navigate(['/organization/' + this.orgId + '/service/', svc.serviceId]);
+  goToService(svc, method?: string) {
+    const uri = ['/organization/' + this.orgId + '/service/', svc.serviceId];
+    if (method) uri.push({method: method});
+
+    this.rtr.navigate(uri);
   }
 }

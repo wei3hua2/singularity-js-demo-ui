@@ -1,0 +1,230 @@
+<div style="background-color:#eeffee;padding-top:10px;padding-bottom:10px">
+  <div>
+    <mat-form-field>
+      <input matInput type="number" placeholder="From block" [(ngModel)]="opts.fromBlock">
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput type="number" placeholder="From block" [(ngModel)]="opts.toBlock">
+    </mat-form-field>
+  </div>
+
+  <mat-form-field>
+    <mat-select placeholder="Methods" [(value)]="selected">
+      <mat-option *ngFor="let method of methods" [value]="method.value">
+        {{method.viewValue}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-radio-group style="margin-left:30px;" [(ngModel)]="selectedBlockchain">
+    <mat-radio-button value="escrow">Escrow</mat-radio-button>
+    <mat-radio-button value="registry">Registry</mat-radio-button>
+    <mat-radio-button value="tokens">Tokens</mat-radio-button>
+  </mat-radio-group>
+
+  <div>
+      <div *ngIf="selected === 'ChannelOpen'">
+        <mat-form-field class="filter-input"><input matInput placeholder="Sender" [(ngModel)]="opts.filter.sender"></mat-form-field>
+        <mat-form-field class="filter-input"><input matInput placeholder="Recipient" [(ngModel)]="opts.filter.recipient"></mat-form-field>
+        <mat-form-field class="filter-input"><input matInput placeholder="Group Id" [(ngModel)]="opts.filter.groupId"></mat-form-field>
+      </div>
+      <div *ngIf="selected === 'DepositFunds'">
+        <mat-form-field class="filter-input"><input matInput placeholder="Sender" [(ngModel)]="opts.filter.sender"></mat-form-field>
+        <mat-form-field class="filter-input"><input matInput placeholder="Recipient" [(ngModel)]="opts.filter.recipient"></mat-form-field>
+      </div>
+      <div *ngIf="selected === 'ChannelAddFunds'">
+          <mat-form-field class="filter-input"><input matInput placeholder="Channel Id" [(ngModel)]="opts.filter.channelId"></mat-form-field>
+      </div>
+      <div *ngIf="selected === 'ChannelExtend'">
+          <mat-form-field class="filter-input"><input matInput placeholder="Channel Id" [(ngModel)]="opts.filter.channelId"></mat-form-field>
+      </div>
+      <div *ngIf="selected === 'WithdrawFunds'">
+          <mat-form-field class="filter-input"><input matInput placeholder="Sender" [(ngModel)]="opts.filter.sender"></mat-form-field>
+      </div>
+      <div *ngIf="selected === 'TransferFunds'">
+          <mat-form-field class="filter-input"><input matInput placeholder="Sender" [(ngModel)]="opts.filter.sender"></mat-form-field>
+          <mat-form-field class="filter-input"><input matInput placeholder="Receiver" [(ngModel)]="opts.filter.receiver"></mat-form-field>
+      </div>
+      <div *ngIf="selected === 'ChannelSenderClaim'">
+          <mat-form-field class="filter-input"><input matInput placeholder="Channel Id" [(ngModel)]="opts.filter.channelId"></mat-form-field>
+      </div>
+  </div>
+
+  <div>
+    <button mat-flat-button color="primary" style="margin-right:8px;" 
+    [disabled]="disableListener" (click)="listen()">Listen</button>
+    <button mat-flat-button color="warn" style="margin-right:8px;" 
+    [disabled]="disableStop" (click)="stop()">Stop</button>
+    <mat-spinner style="display:inline-block;" *ngIf="!disableStop" [diameter]="diameter" [strokeWidth]="strokeWidth"></mat-spinner>
+  </div>
+
+</div>
+
+<mat-list class="item-content-list" role="list">
+    <mat-list-item class="item-content" *ngFor="let activity of activities" role="listitem">
+      <div *ngIf="selected === 'ChannelOpen'">
+        <h4 mat-line>Channel Id {{activity.returnValues.channelId}}</h4>
+        <div mat-line class="fields-para">
+          <span class="field-span">Amount: {{activity.returnValues.amount}} cogs</span>
+          <span class="field-span">Expiration: {{activity.returnValues.expiration}}</span>
+          <span class="field-span">Group Id: {{activity.returnValues.groupId}}</span>
+          <span class="field-span">Nonce: {{activity.returnValues.nonce}}</span>
+          <span class="field-span">Recipient: {{activity.returnValues.recipient}}</span>
+          <span class="field-span">Signer: {{activity.returnValues.signer}}</span>
+          <span class="field-span">Sender: {{activity.returnValues.sender}}</span>
+        </div>
+        <mat-divider mat-line></mat-divider>
+      </div>
+
+      <div *ngIf="selected == 'DepositFunds'">
+        <h4 mat-line>Amount {{activity.returnValues.amount | number}} cogs</h4>
+        <div mat-line class="fields-para">
+          <span class="field-span">Sender: {{activity.returnValues.sender}}</span>
+        </div>
+        <mat-divider mat-line></mat-divider>
+      </div>
+
+      <div *ngIf="selected == 'ChannelAddFunds'">
+        <h4 mat-line>Channel Id {{activity.returnValues.channelId}}</h4>
+        <div mat-line class="fields-para">
+          <span class="field-span">Additional funds: {{activity.returnValues.additionalFunds}} cogs</span>
+        </div>
+        <mat-divider mat-line></mat-divider>
+      </div>
+
+      <div *ngIf="selected == 'ChannelExtend'">
+        <h4 mat-line>Channel Id {{activity.returnValues.channelId}}</h4>
+        <div mat-line class="fields-para">
+          <span class="field-span">New Expiration: {{activity.returnValues.newExpiration}}</span>
+        </div>
+        <mat-divider mat-line></mat-divider>
+      </div>
+
+      <div *ngIf="selected == 'WithdrawFunds'">
+        <h4 mat-line>Sender {{activity.returnValues.sender}}</h4>
+        <div mat-line class="fields-para">
+          <span class="field-span">Amount: {{activity.returnValues.amount | number}} cogs</span>
+        </div>
+        <mat-divider mat-line></mat-divider>
+      </div>
+
+      <div *ngIf="selected == 'TransferFunds'">
+        <h4 mat-line>Amount {{activity.returnValues.amount | number}}</h4>
+        <div mat-line class="fields-para">
+          <span class="field-span">Sender: {{activity.returnValues.sender}}</span>
+          <span class="field-span">Receiver: {{activity.returnValues.receiver}}</span>
+        </div>
+        <mat-divider mat-line></mat-divider>
+      </div>
+
+      <div *ngIf="selected == 'ChannelSenderClaim'">
+        <h4 mat-line>Channel Id {{activity.returnValues.channelId}}</h4>
+        <div mat-line class="fields-para">
+          <span class="field-span">Claim Amount: {{activity.returnValues.claimAmount}}</span>
+          <span class="field-span">Nonce: {{activity.returnValues.nonce}}</span>
+        </div>
+        <mat-divider mat-line></mat-divider>
+      </div>
+
+
+      <div *ngIf="selected == 'Approval'">
+        <h4 mat-line>Channel Id {{activity.returnValues.channelId}}</h4>
+        <div mat-line class="fields-para">
+          <span class="field-span">Amount: {{activity.returnValues.amount}}</span>
+          <span class="field-span">Nonce: {{activity.returnValues.nonce}}</span>
+          <span class="field-span">Recipient: {{activity.returnValues.recipient}}</span>
+          <span class="field-span">Sender: {{activity.returnValues.sender}}</span>
+          <span class="field-span">Signer: {{activity.returnValues.signer}}</span>
+          <span class="field-span">Expiration: {{activity.returnValues.expiration}}</span>
+          <span class="field-span">Group Id: {{activity.returnValues.groupId}}</span>
+        </div>
+        <mat-divider mat-line></mat-divider>
+      </div>
+
+      <div *ngIf="selected == 'Transfer'">
+        <p>{{activity.returnValues | json}}</p>
+        <mat-divider mat-line></mat-divider>
+      </div>
+
+
+      <div *ngIf="selected == 'OrganizationCreated'">
+          <h4 mat-line>Org Id {{activity.returnValues.orgId}}</h4>
+          <div mat-line class="fields-para">
+          </div>
+          <mat-divider mat-line></mat-divider>
+        </div>
+    
+        <div *ngIf="selected == 'OrganizationModified'">
+          <h4 mat-line>Org Id {{activity.returnValues.orgId}}</h4>
+          <div mat-line class="fields-para">
+          </div>
+          <mat-divider mat-line></mat-divider>
+        </div>
+    
+        <div *ngIf="selected == 'OrganizationDeleted'">
+          <h4 mat-line>Org Id {{activity.returnValues.orgId}}</h4>
+          <div mat-line class="fields-para">
+          </div>
+          <mat-divider mat-line></mat-divider>
+        </div>
+    
+        <div *ngIf="selected == 'ServiceCreated'">
+            <h4 mat-line>Service Id {{activity.returnValues.serviceId}}</h4>
+            <div mat-line class="fields-para">
+                <span class="field-span">Organization Id: {{activity.returnValues.orgId}}</span>
+                <span class="field-span">Metadata Uri: {{activity.returnValues.metadataURI}}</span>
+            </div>
+          <mat-divider mat-line></mat-divider>
+        </div>
+    
+        <div *ngIf="selected == 'ServiceMetadataModified'">
+          <h4 mat-line>Service Id {{activity.returnValues.serviceId}}</h4>
+          <div mat-line class="fields-para">
+              <span class="field-span">Organization Id: {{activity.returnValues.orgId}}</span>
+              <span class="field-span">Metadata Uri: {{activity.returnValues.metadataURI}}</span>
+          </div>
+          <mat-divider mat-line></mat-divider>
+        </div>
+    
+        <div *ngIf="selected == 'ServiceTagsModified'">
+          <h4 mat-line>Service Id {{activity.returnValues.serviceId}}</h4>
+          <div mat-line class="fields-para">
+              <span class="field-span">Organization Id: {{activity.returnValues.orgId}}</span>
+          </div>
+          <mat-divider mat-line></mat-divider>
+        </div>
+    
+        <div *ngIf="selected == 'ServiceDeleted'">
+          <h4 mat-line>Service Id {{activity.returnValues.serviceId}}</h4>
+          <div mat-line class="fields-para">
+              <span class="field-span">Organization Id: {{activity.returnValues.orgId}}</span>
+          </div>
+          <mat-divider mat-line></mat-divider>
+        </div>
+    
+        <div *ngIf="selected == 'TypeRepositoryCreated'">
+          <h4 mat-line>Repository Id {{activity.returnValues.typeRepositoryId}}</h4>
+          <div mat-line class="fields-para">
+              <span class="field-span">Organization Id: {{activity.returnValues.orgId}}</span>
+          </div>
+          <mat-divider mat-line></mat-divider>
+        </div>
+    
+        <div *ngIf="selected == 'TypeRepositoryModified'">
+          <h4 mat-line>Repository Id {{activity.returnValues.typeRepositoryId}}</h4>
+          <div mat-line class="fields-para">
+              <span class="field-span">Organization Id: {{activity.returnValues.orgId}}</span>
+          </div>
+          <mat-divider mat-line></mat-divider>
+        </div>
+    
+        <div *ngIf="selected == 'TypeRepositoryDeleted'">
+          <h4 mat-line>Repository Id {{activity.returnValues.typeRepositoryId}}</h4>
+          <div mat-line class="fields-para">
+              <span class="field-span">Organization Id: {{activity.returnValues.orgId}}</span>
+          </div>
+          <mat-divider mat-line></mat-divider>
+        </div>
+    </mat-list-item>
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+</mat-list>

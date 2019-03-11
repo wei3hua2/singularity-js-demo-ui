@@ -1,0 +1,4 @@
+<mat-accordion>
+  <job-input [expanded]="!expanded" [request]="method.value.request" [channels]="channels" (runJob)="exeRunJob($event)"></job-input>
+  <job-result [expanded]="expanded" [response]="method.value.response" [status]="service.currentJob"></job-result>
+</mat-accordion>

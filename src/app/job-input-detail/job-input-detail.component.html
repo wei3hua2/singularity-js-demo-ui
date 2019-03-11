@@ -1,0 +1,18 @@
+<div style="background-color:#ddeedd; display:inline-block">
+  <mat-form-field>
+    <input matInput type="number" placeholder="Minimum Amount" [(value)]="options.channel_min_amount">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput type="number" placeholder="Minimum Expiration" [(value)]="options.channel_min_expiration">
+  </mat-form-field>
+  
+  <mat-checkbox style="margin-left:10px" [(ngModel)]="options.autohandle_channel">handle channel</mat-checkbox>
+  
+  <mat-form-field>
+    <mat-select [(value)]="selectedChannel">
+      <mat-option *ngFor="let channel of channels" [value]="channel">
+        Id: {{channnel.channelId}}, nonce: {{channel.nonce}}, amount: {{channel.amount}}, expiration: {{channel.expiration}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

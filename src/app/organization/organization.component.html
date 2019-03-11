@@ -1,15 +1,30 @@
-<p>
-  ID : {{ (org$ | async).id }}
-</p>
-<p>
-  Name : {{ (org$ | async).name }}
-</p>
-<p>
-  Owner : {{ (org$ | async).owner }}
-</p>
+<mat-grid-list cols="3" rowHeight="2:1">
+    <h1 mat-subheader>{{ (org$ | async)?.name }}</h1>
+    <p mat-subheader>{{ (org$ | async)?.id }}</p>
+    <mat-grid-tile *ngFor="let svc of orgSvcs$ | async" (click)="goToService(svc)">
+        <mat-card style="width:92%;height:92%;padding:0px;">
+            <mat-card-header style="background-color:#d6ffd4; padding-top:5px; padding-bottom:5px;">
+                <mat-icon mat-list-icon>adb</mat-icon>
+                <h4 style="margin:5px">{{svc.serviceId}}</h4>
+            </mat-card-header>
+            <mat-card-content>
+                <mat-spinner *ngIf="!svc.isInit" class="load-svc-spinner"></mat-spinner>
+                <div *ngIf="svc.isInit">
+                    <p style="margin-bottom:0px;">{{svc.metadata.display_name}}</p>
+                    <p style="margin-bottom:0px;">
+                        {{svc.metadata.pricing.price_in_cogs}} cogs, {{svc.metadata.pricing.price_model}}
+                    </p>
+                </div>
+            </mat-card-content>
+            <mat-card-actions *ngIf="svc.serviceInfo(); let info">
+                <button matRipple
+                *ngFor="let method of info.methods | keyvalue" color="primary"
+                mat-stroked-button mat-button>
+                    <span (click)="goToService(svc, method.key)">{{method.key}}</span>
+                </button>
+            </mat-card-actions>
+        </mat-card>
+    </mat-grid-tile>
+</mat-grid-list>
 
-<br/><br/>
 
-<p *ngFor="let svc of orgSvcs$ | async | keyvalue" (click)="goToService(svc.value)">
-  {{svc.key}}
-</p>

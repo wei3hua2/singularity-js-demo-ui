@@ -1,6 +1,18 @@
-<mat-list role="list">
-  <mat-list-item 
-    *ngFor="let org of orgs | async | keyvalue" 
-    (click)="goToOrg(org.value)"
-    role="listitem">{{org.value.id}}</mat-list-item>
-</mat-list>
+<mat-grid-list cols="3" rowHeight="3:1">
+  <h1 mat-subheader>Organizations</h1>
+  <mat-spinner *ngIf="loading"></mat-spinner>
+  <mat-grid-tile matRipple *ngFor="let org of orgs | async | keyvalue" (click)="goToOrg(org.value)">
+    <mat-card style="width:92%;height:92%;padding:0px;">
+      <mat-card-header style="background-color:#d6ffd4; padding-top:5px; padding-bottom:5px;">
+          <mat-icon mat-list-icon>group</mat-icon>
+          <h4 style="margin:5px">{{org.value.id}}</h4>
+      </mat-card-header>
+      
+      <p style="margin-bottom:0px;">{{org.value.name}}</p>
+      <p style="font-size:0.75em;margin-top:3px;">{{org.value.owner}}</p>
+
+      <footer style="font-size:0.9em">{{org.value.services.length}} services</footer>
+      
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>

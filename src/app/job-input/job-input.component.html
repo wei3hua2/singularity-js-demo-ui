@@ -1,0 +1,15 @@
+<mat-expansion-panel [expanded]="expanded">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <h2>{{request.name}}</h2>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <method-request-field matLine *ngFor="let field of request.fields | keyvalue" [field]="field"></method-request-field>
+
+  <div></div>
+
+  <job-input-detail [channels]="channels"></job-input-detail>
+
+  <button style="margin-right:10px;display:block;" (click)="runJob.emit(request)"
+        mat-flat-button color="primary">Run Job</button>
+</mat-expansion-panel>

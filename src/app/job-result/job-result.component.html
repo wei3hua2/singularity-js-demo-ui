@@ -1,0 +1,61 @@
+<mat-expansion-panel [expanded]="expanded">
+    <mat-expansion-panel-header>
+      <mat-panel-title><h2>{{response.name}}</h2></mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-horizontal-stepper #stepper>
+      <mat-step>
+        <ng-template matStepLabel>Resolving Channel</ng-template>
+        <job-result-step [step]="evt_logs['available_channels']"></job-result-step>
+        <job-result-step [step]="evt_logs['selected_channel']"></job-result-step>
+        <job-result-step [step]="evt_logs['sign_channel_opts']"></job-result-step>
+        <job-result-step [step]="evt_logs['get_channel_state']"></job-result-step>
+      </mat-step>
+      <mat-step>
+        <ng-template matStepLabel>Service Call</ng-template>
+        <job-result-step [step]="evt_logs['sign_request']"></job-result-step>
+        <job-result-step [step]="evt_logs['request_info']"></job-result-step>
+      </mat-step>
+      <mat-step>
+        <ng-template matStepLabel>{{response.name}}</ng-template>
+        <job-result-step [step]="evt_logs['raw_response']"></job-result-step>
+      </mat-step>
+    </mat-horizontal-stepper>
+
+  </mat-expansion-panel>
+
+
+<!-- <mat-expansion-panel [expanded]="expanded">
+  <mat-expansion-panel-header>
+    <mat-panel-title><h2>{{response.name}}</h2></mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <mat-progress-bar mode="determinate" [value]="progress_val"></mat-progress-bar>
+
+  <mat-card *ngIf="status?.error" style="margin-top:20px;margin-bottom:8px;" color="warn" class="error-container">
+      {{status?.error}}
+  </mat-card>
+
+  <mat-card
+    style="background-color:#cee0f0;margin-bottom:5px;" class="fields-container" *ngIf="status?.response">
+    <mat-form-field *ngFor="let r of status.response | keyvalue">
+      <input matInput disabled=true [placeholder]="r.key" [value]="r.value" type="number">
+      <h3 class="field-prefix" matPrefix>{{r.key}}</h3>
+    </mat-form-field>
+  </mat-card>
+
+  <mat-list *ngIf="evt_logs">
+    <mat-list-item *ngFor="let evt of evt_logs" (click)="showEventDetail(evt)">
+        <mat-icon *ngIf="evt.done" style="color:green" mat-list-icon>check_circle</mat-icon>
+        <mat-icon *ngIf="evt.isError" style="color:red" mat-list-icon>remove_circle</mat-icon>
+        <mat-icon *ngIf="!evt.done && !evt.isError && !evt.running" style="color:grey" mat-list-icon>more_horiz</mat-icon>
+        <mat-spinner *ngIf="evt.running" [diameter]="dia" [strokeWidth]="strokeWid" mat-list-icon></mat-spinner>
+        <h4 matLine>{{evt.name}} </h4>
+        <p matLine> {{evt.info}}</p>
+        <mat-divider></mat-divider>
+    </mat-list-item>
+  </mat-list>
+</mat-expansion-panel> -->
+
+
+

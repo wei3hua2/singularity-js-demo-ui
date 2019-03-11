@@ -1,0 +1,10 @@
+<div>
+  <h4 style="display:inline-block;">
+    <mat-icon class="result-icon" *ngIf="step.done" style="color:green" mat-list-icon>check_circle</mat-icon>
+    <mat-icon class="result-icon" *ngIf="step.isError" style="color:red" mat-list-icon>remove_circle</mat-icon>
+    <mat-icon class="result-icon" *ngIf="!step.done && !step.isError && !step.running" style="color:grey" mat-list-icon>more_horiz</mat-icon>
+    <mat-spinner class="result-icon" *ngIf="step.running" diameter="20" strokeWidth="3" mat-list-icon></mat-spinner>
+    {{step.name}}
+  </h4>
+  <p style="display:inline-block;margin-left: 10px;"> {{step.info}}</p>
+</div>

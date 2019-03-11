@@ -1,3 +1,12 @@
-<mat-toolbar color="primary" class="elevate-menu">
-  <span class="title">Singularity-Js Demo</span>
+<mat-toolbar color="primary" class="elevate-menu" style="height:50px;">
+  <span class="navbar-title mat-title">Singularity-JS</span>
+
+  <button mat-button routerLink="/organizations">Organizations</button>
+  <button mat-button routerLink="/wallet">Wallet</button>
+  <button mat-button routerLink="/activities">Activities</button>
+
+  <span class="navbar-spacer"></span>
+  <span class="navbar-network">{{network$ | async}}</span>
+  <span class="navbar-agi-num">{{agiAmount$ | async | agi:'1.0-3'}} AGI</span>
+  <span class="navbar-agi-num">{{escrowBalance$ | async | agi:'1.0-3'}} Escrow</span>
 </mat-toolbar>

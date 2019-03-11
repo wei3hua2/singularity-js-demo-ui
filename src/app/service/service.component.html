@@ -1,25 +1,32 @@
-<p>
-  ID : {{ (svc$ | async).serviceId }}
-</p>
-<p>
-  Tags : {{ (svc$ | async).tags }}
-</p>
+<mat-card class="service-card">
+  <mat-card-title>
+    {{ (svc$ | async)?.info?.name }}
+    - {{ (svc$ | async)?.id }}
+  </mat-card-title>
+  <mat-card-subtitle>
+      <p>Tags : {{ (svc$ | async)?.svc.tags }}</p>
+  </mat-card-subtitle>
+  <mat-card-content>
+    <mat-sidenav-container>
+      <mat-sidenav mode="side" opened>
+          <mat-list role="list">
+            <mat-list-item 
+            (click)="selectMethod(method)" [class.is-active]="method.key === selectedMethod?.key" 
+            *ngFor="let method of methods$ | async | keyvalue" role="listitem">
+              <h4>{{method.key}}</h4>
+            </mat-list-item>
+          </mat-list>
+      </mat-sidenav>
+      <mat-sidenav-content class="service-main-content">
+          <div *ngIf="!selectedMethod"><h4>Select a method to invoke</h4></div>
+          <div *ngIf="selectedMethod" class="method-main-content">
+            <job-pane [method]="selectedMethod" [service]="svc$ | async" 
+            [channels]="channels$ | async" (runJob)="runJob($event)">
+            </job-pane>
+          </div>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </mat-card-content>
+</mat-card>
 
-<h3>{{ (svc$ | async)?.info?.name }}</h3>
 
-
-<div *ngFor="let method of (svc$ | async)?.info?.methods | keyvalue">
-  <h4>{{ method.key }}</h4>
-  <div>
-    <h5>{{method.value.request.name}}</h5>
-    <p *ngFor="let field of method.value.request.fields | keyvalue">
-      {{field.key}} : {{field.value.type}} - {{field.value.required}} - {{field.value.optional}}
-    </p>
-    <h5>{{method.value.response.name}}</h5>
-    <p *ngFor="let field of method.value.response.fields | keyvalue">
-      {{field.key}} : {{field.value.type}} - {{field.value.required}} - {{field.value.optional}}
-    </p>
-  </div>
-  <!-- <p>{{ method.value.request | json}}</p>
-  <p>{{ method.value.response | json}}</p> -->
-</div>

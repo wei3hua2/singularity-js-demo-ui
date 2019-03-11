@@ -1,0 +1,8 @@
+<mat-form-field class="input-field" matLine *ngIf="fieldUI.type === 'string'">
+    <mat-label>{{field.key}}</mat-label>
+    <input matInput [placeholder]="field.key" [(ngModel)]="field.value.value">
+</mat-form-field>
+<mat-form-field class="input-field" matLine *ngIf="fieldUI.type === 'number'">
+    <mat-label>{{field.key}}</mat-label>
+    <input matInput type="number" [(ngModel)]="field.value.value" [placeholder]="field.key">
+</mat-form-field>
