@@ -29,7 +29,6 @@ export class JobResultComponent implements OnInit {
   progress_val: number;
   _status: ServiceJobState;
 
-  current_step: string;
   evt_logs: any[];
 
   _statusMock: any = {
@@ -49,13 +48,18 @@ export class JobResultComponent implements OnInit {
 
   @Input('status')
   set status(status) {
-    if (status && status.evt_logs) this.evt_logs = status.evt_logs;
-    if (status && status.current_step) this.current_step = status.current_step;
+    // if (status && !this.evt_logs) this.evt_logs = this.defaultEventLogs();
+    if (status && status.evt_logs) this.parseEvents(status.evt_logs);
+
+    // const prog = status && status.evt_logs ? status.evt_logs.length * 1.0 : 0.0;
+    // this.progress_val = prog / 7.0 * 100.0;
+    // if (status && status.isCompleted) this.progress_val = 100;
 
     this._status = status;
   }
   get status(): ServiceJobState {
     return this._status;
+    // return this._statusMock;
   }
 
   showEventDetail(evt) {
@@ -71,8 +75,7 @@ export class JobResultComponent implements OnInit {
 
 
   constructor(public dialog: MatDialog) {
-    // this.evt_logs = this.defaultEventLogs();
-    this.evt_logs = [];
+    this.evt_logs = this.defaultEventLogs();
   }
 
   // --- check channel, create channel, topup channel
@@ -141,17 +144,17 @@ export class JobResultComponent implements OnInit {
     this.progress_val = 0.0;
   }
 
-  // defaultEventLogs() {
-  //   return _.cloneDeep({
-  //     'available_channels': {name: 'Available Channels', running: true, done: false, isError: false, info: '-', data: null},
-  //     'selected_channel': { name: 'Selected Channel', running: false, done: false, isError: false, info: '-', data: null},
-  //     'sign_channel_opts': {name: 'Request Signature for Channel State', running: false, isError: false, done: false, info: '-', data: null},
-  //     'get_channel_state': {name: 'Channel State', running: false, done: false, isError: false, info: '-', data: null},
-  //     'sign_request': {name: 'Request Signature for Service Call', running: false, done: false, isError: false, info: '-', data: null},
-  //     'request_info': {name: 'Request Info', running: false, done: false, isError: false, info: '-', data: null},
-  //     'raw_response': {name: 'Result', running: false, done: false, isError: false, info: '-', data: null}
-  //   });
-  // }
+  defaultEventLogs() {
+    return _.cloneDeep({
+      'available_channels': {name: 'Available Channels', running: true, done: false, isError: false, info: '-', data: null},
+      'selected_channel': { name: 'Selected Channel', running: false, done: false, isError: false, info: '-', data: null},
+      'sign_channel_opts': {name: 'Request Signature for Channel State', running: false, isError: false, done: false, info: '-', data: null},
+      'get_channel_state': {name: 'Channel State', running: false, done: false, isError: false, info: '-', data: null},
+      'sign_request': {name: 'Request Signature for Service Call', running: false, done: false, isError: false, info: '-', data: null},
+      'request_info': {name: 'Request Info', running: false, done: false, isError: false, info: '-', data: null},
+      'raw_response': {name: 'Result', running: false, done: false, isError: false, info: '-', data: null}
+    });
+  }
 
 }
 

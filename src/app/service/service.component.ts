@@ -46,11 +46,14 @@ export class ServiceComponent implements OnInit {
 
     this.store.dispatch(new InitSvc([this.orgId, this.serviceId]));
 
+    // this.currentJob$.subscribe((j) => {
+    //   console.log('job ===');
+    //   console.log(j);
+    // });
 
     const subscription = this.svc$.subscribe(
       (svc) => {
         if (svc) {
-          console.log(svc.svc);
           this.store.dispatch(new LoadSvcChannels(svc.svc));
           subscription.unsubscribe();
         }
@@ -64,12 +67,14 @@ export class ServiceComponent implements OnInit {
   }
 
   runJob(fields) {
-    const opts = {use_channel_id: 1228};
+    console.log(fields);
     const method = this.selectedMethod.key;
     const request = _.mapValues(fields.fields, 'value');
 
+
+
     this.svc$.pipe( take(1)).subscribe((s) => {
-      this.store.dispatch(new RunSvcJob([s.svc, method, request, opts]));
+      this.store.dispatch(new RunSvcJob([s.svc, method, request, {}]));
     });
   }
 

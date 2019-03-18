@@ -3,7 +3,7 @@
       <mat-panel-title><h2>{{response.name}}</h2></mat-panel-title>
     </mat-expansion-panel-header>
 
-    <mat-horizontal-stepper #stepper>
+    <!-- <mat-horizontal-stepper #stepper>
       <mat-step>
         <ng-template matStepLabel>Resolving Channel</ng-template>
         <job-result-step [step]="evt_logs['available_channels']"></job-result-step>
@@ -20,7 +20,25 @@
         <ng-template matStepLabel>{{response.name}}</ng-template>
         <job-result-step [step]="evt_logs['raw_response']"></job-result-step>
       </mat-step>
-    </mat-horizontal-stepper>
+    </mat-horizontal-stepper> -->
+
+    <mat-card>
+      <mat-card-content>
+        <div>Result : {{status?.response | json}}</div>
+      </mat-card-content>
+    </mat-card>
+
+
+    <mat-list *ngIf="evt_logs">
+      <mat-list-item *ngFor="let evt of evt_logs | keyvalue" (click)="showEventDetail(evt)">
+          <h4 matLine>
+            <mat-icon class="result-icon" *ngIf="evt.value" style="color:green" mat-list-icon>check_circle</mat-icon>
+            {{evt.key}}
+          </h4>
+          <p matLine> {{evt.value}}</p>
+          <mat-divider></mat-divider>
+      </mat-list-item>
+    </mat-list>
 
   </mat-expansion-panel>
 

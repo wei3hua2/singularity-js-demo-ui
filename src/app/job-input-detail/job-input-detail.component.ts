@@ -7,8 +7,17 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class JobInputDetailComponent implements OnInit {
 
-  @Input()
-  channels;
+  // @Input()
+  // channels;
+
+  _channels;
+  @Input('channels')
+  set channels(c) {
+    this._channels = c;
+  }
+  get channels () {
+    return this._channels;
+  }
 
   _selectedChannel;
 

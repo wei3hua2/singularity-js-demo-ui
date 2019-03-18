@@ -35,7 +35,6 @@ export class SvcEffects {
       ofType(svc.SvcActionTypes.LoadSvcChannels),
       switchMap((action) => {
         const s: any = action['payload'];
-        console.log(this.snetSvc);
 
         return this.snetSvc.getServiceChannels(s).pipe(
           map((channels) => new svc.LoadSvcChannelsSuccess([s, channels])) );
@@ -48,26 +47,12 @@ export class SvcEffects {
       switchMap((action) => {
         const service: any = action['payload'][0], method = action['payload'][1],
           request = action['payload'][2], opts = action['payload'][3];
-        const serviceId = service.serviceId, orgId = service.organizationId;
+        const serviceId = service.id, orgId = service.organizationId;
         
         const job: any = this.snetSvc.runJob(service, method, request, opts);
 
-        job.on('available_channels', (val) => this.store.dispatch(
-          new svc.RunSvcJobStatusChange([orgId, serviceId, 'available_channels', val])));
-        job.on('selected_channel', (val) => this.store.dispatch(
-          new svc.RunSvcJobStatusChange([orgId, serviceId, 'selected_channel', val])));
-        job.on('service_created', (val) => this.store.dispatch(
-          new svc.RunSvcJobStatusChange([orgId, serviceId, 'service_created', val])));
-        job.on('before_execution', (val) => this.store.dispatch(
-          new svc.RunSvcJobStatusChange([orgId, serviceId, 'before_execution', val])));
-        job.on('get_channel_state', (val) => this.store.dispatch(
-          new svc.RunSvcJobStatusChange([orgId, serviceId, 'get_channel_state', val])));
-        job.on('sign_channel_opts', (val) => this.store.dispatch(
-          new svc.RunSvcJobStatusChange([orgId, serviceId, 'sign_channel_opts', val])));
-        job.on('signed_channel', (val) => this.store.dispatch(
-          new svc.RunSvcJobStatusChange([orgId, serviceId, 'signed_channel', val])));
-        job.on('channel_state', (val) => this.store.dispatch(
-          new svc.RunSvcJobStatusChange([orgId, serviceId, 'channel_state', val])));
+        job.on('all_events', (events) => this.store.dispatch(
+          new svc.RunSvcJobStatusChange([orgId, serviceId, events[0], events[1]])));
           
           
         job.catch((err) => this.store.dispatch(new svc.RunSvcJobFailure([orgId, serviceId, err])));

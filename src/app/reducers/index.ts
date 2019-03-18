@@ -17,6 +17,7 @@ export interface ServiceJobState {
   request?: Object;
   response?: Object;
   isCompleted?: boolean;
+  current_step?: string;
   evt_logs?: {type: string, params: any[]}[];
   error?: any;
 }
@@ -79,8 +80,9 @@ function orgReducer(state = initialOrgState, action: OrgActions): OrgState[] {
 }
 
 function loadOrgSvcSuccess(state: SvcState[], svcs: Service[]): SvcState[] {
+  console.log(svcs);
   const svcState = _.map(svcs, (svc) => ({
-    id: svc.serviceId, organizationId: svc.organizationId, svc: svc,
+    id: svc.id, organizationId: svc.organizationId, svc: svc,
     info: null, currentJob: null
   }));
 
@@ -88,9 +90,9 @@ function loadOrgSvcSuccess(state: SvcState[], svcs: Service[]): SvcState[] {
 }
 function initSvcSuccess(state: SvcState[], payload: Service): SvcState[] {
   const service = payload;
-  const svcState = _.find(state, {id: service.serviceId, organizationId: service.organizationId});
-  const newState = {id: service.serviceId, organizationId: service.organizationId, 
-    svc: service, info: service.serviceInfo(), currentJob: null};
+  const svcState = _.find(state, {id: service.id, organizationId: service.organizationId});
+  const newState = {id: service.id, organizationId: service.organizationId, 
+    svc: service, info: service.info(), currentJob: null};
 
   if (svcState) 
     return _.map(state, (s) => s.id === newState.id ? newState : s);
@@ -100,7 +102,7 @@ function initSvcSuccess(state: SvcState[], payload: Service): SvcState[] {
 
 function loadSvcChannelsSuccess(state: SvcState[], payload: [Service, Channel[]]): SvcState[] {
   const svc = payload[0], channels = payload[1];
-  const svcState = _.find(state, {id: svc.serviceId, organizationId: svc.organizationId});
+  const svcState = _.find(state, {id: svc.id, organizationId: svc.organizationId});
   const newState = Object.assign({}, svcState, {channels: channels});
 
   return _.map(state, (s) => s.id === newState.id ? newState : s);
@@ -114,7 +116,7 @@ function runSvcJob(state: SvcState[], payload: any[]): SvcState[] {
   };
 
   return _.map(state, (s) => {
-    if (s.id === svc.serviceId && s.organizationId === svc.organizationId) s.currentJob = job;
+    if (s.id === svc.id && s.organizationId === svc.organizationId) s.currentJob = job;
     return s;
   });
 }
@@ -122,11 +124,15 @@ function runSvcJobStatusChange(state: SvcState[], payload: [string, string, stri
   const orgId = payload[0], svcId = payload[1], type = payload[2], val = payload[3];
 
   const result: SvcState[] = _.map(state, (s) => {
-    s = _.clone(s), s.currentJob = _.clone(s.currentJob), s.currentJob.evt_logs = _.clone(s.currentJob.evt_logs);
+    s = _.clone(s), 
+    s.currentJob = _.clone(s.currentJob), 
+    s.current_step = type,
+    s.currentJob.evt_logs = val;
 
-    if (s.id === svcId && s.organizationId === orgId) {
-      s.currentJob.evt_logs = _.concat(s.currentJob.evt_logs, {type: type, params: val});
-    }
+    // if (s.id === svcId && s.organizationId === orgId) {
+      // s.current_step = type;
+      // s.currentJob.evt_logs = _.concat(s.currentJob.evt_logs, {type: type, params: val});
+    // }
     return s;
   });
 

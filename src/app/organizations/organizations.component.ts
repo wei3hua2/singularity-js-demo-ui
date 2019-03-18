@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromRoot from '../reducers';
 import _ from 'lodash';
 import {LoadOrgs} from '../reducers/org.actions';
 
-import {Snet} from 'singnet-js/dist/snet.js';
 import {Organization} from 'singnet-js/dist/models';
 
 @Component({

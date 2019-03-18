@@ -11,7 +11,7 @@
   <mat-form-field>
     <mat-select [(value)]="selectedChannel">
       <mat-option *ngFor="let channel of channels" [value]="channel">
-        Id: {{channnel.channelId}}, nonce: {{channel.nonce}}, amount: {{channel.amount}}, expiration: {{channel.expiration}}
+        Id: {{channel.id}}, nonce: {{channel.nonce}}, amount: {{channel.amount}}, expiration: {{channel.expiration}}
       </mat-option>
     </mat-select>
   </mat-form-field>

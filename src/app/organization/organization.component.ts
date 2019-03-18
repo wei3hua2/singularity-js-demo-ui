@@ -47,7 +47,7 @@ export class OrganizationComponent implements OnInit {
   }
 
   goToService(svc, method?: string) {
-    const uri = ['/organization/' + this.orgId + '/service/', svc.serviceId];
+    const uri = ['/organization/' + this.orgId + '/service/', svc.id];
     if (method) uri.push({method: method});
 
     this.rtr.navigate(uri);
